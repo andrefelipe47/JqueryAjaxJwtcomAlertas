@@ -1,0 +1,52 @@
+<form id="formularioLogin">
+    <input>
+    <input>
+    <button type="submit">Logar</button>
+</form>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $.ajaxSetup({
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status == 400) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ops!',
+                    text: jqXHR.responseText
+                });
+            } else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocorreu um erro!',
+                    text: jqXHR.responseText
+                });
+            }
+        }
+    });
+</script>
+<script>
+    $("#formularioLogin").submit(function (evento) {
+        evento.preventDefault();
+        logar();
+    });
+
+    function logar() {
+        var dados = {
+            email: $("#formularioLogin input").eq(0).val(),
+            senha: $("#formularioLogin input").eq(1).val(),
+        };
+        var jsonDados = JSON.stringify(dados);
+        $.ajax({
+            method: "POST",
+            url: "https://login.aiur.com.br/v1/UsuarioAutenticacao",
+            data: jsonDados, // o que eu vou enviar para o servidor
+            contentType: "application/json"
+        }).done(function (resposta) {
+            localStorage.setItem('TokenAutenticacao', resposta.token);
+            location.href="graficos.html";
+        });
+    }
+</script>

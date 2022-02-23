@@ -1,0 +1,50 @@
+<button onclick="testarJwt()">Chamada teste</button>
+
+<script src="https://cdnjs.cloudflare.com/ajax/libs/jquery/3.6.0/jquery.min.js"
+    integrity="sha512-894YE6QWD5I59HgZOGReFYm4dnWc1Qt5NtvYSaNcOP+u1T9qYdvdihz0PPSiiqn/+/3e7Jo4EaG7TubfWGUrMQ=="
+    crossorigin="anonymous" referrerpolicy="no-referrer"></script>
+<script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+<script>
+    $.ajaxSetup({
+        beforeSend: function(xhr) {
+        xhr.setRequestHeader('Authorization', 'Bearer ' + localStorage.getItem('TokenAutenticacao'));
+    },
+        error: function (jqXHR, textStatus, errorThrown) {
+            if (jqXHR.status == 400) {
+                Swal.fire({
+                    icon: 'warning',
+                    title: 'Ops!',
+                    text: jqXHR.responseText
+                });
+            }
+            else if (jqXHR.status == 401) {
+                Swal.fire({
+                    title: 'Sessão expirada!',
+                    showDenyButton: false,
+                    showCancelButton: false,
+                    confirmButtonText: 'Ok'
+                }).then((result) => {
+                    location.href = "login.html";
+                });
+            }
+            else {
+                Swal.fire({
+                    icon: 'error',
+                    title: 'Ocorreu um erro!',
+                    text: jqXHR.responseText
+                });
+            }
+        }
+    });
+</script>
+<script>
+    function testarJwt() {
+        $.ajax({
+            method: "GET",
+            url: "https://login.aiur.com.br/v1/Teste",
+           
+        }).done(function (resposta) {
+            console.log("sucesso");
+        });
+    }
+</script>
